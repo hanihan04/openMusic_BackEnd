@@ -27,18 +27,17 @@ class SongsService {
     async getSongs(title, performer){  
         let result = await this._pool.query('SELECT id, title, performer FROM songs');  
         
-        if(performer !== undefined){
-            result = await this._pool.query(`SELECT id, title, performer FROM songs WHERE lower(performer) LIKE '%${performer}%'`);
-        }
-        
-        if (title !== undefined && performer !== undefined) {
-            result = await this._pool.query(`SELECT id, title, performer FROM songs WHERE lower(performer) LIKE lower('%${performer}%') AND lower(title) LIKE lower('%${title}%')`);
-        }
-
         if(title !== undefined){
-            result = await this._pool.query(`SELECT id, title, performer FROM songs WHERE lower(title) LIKE '%${title}%'`);
+            result = await this._pool.query(`SELECT id, title, performer FROM songs WHERE lower(title) LIKE lower('%${title}%')`);
         }
 
+        if(performer !== undefined){
+            result = await this._pool.query(`SELECT id, title, performer FROM songs WHERE lower(performer) LIKE lower('%${performer}%')`);
+        }
+
+        if (!result.rows.length) {
+            throw new NotFoundError('Lagu tidak ditemukan');
+        } 
         return result.rows.map(mapDBToModelSongs);        
     }
 

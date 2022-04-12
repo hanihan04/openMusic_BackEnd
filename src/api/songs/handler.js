@@ -47,10 +47,9 @@ class SongsHandler{
   }
 
   async getSongsHandler(request, h){
-    const { title, performer } = request.query;
-   
-    if (performer !== undefined) {
-      let songs = await this._service.getSongs(performer.toLowerCase());
+    try{
+      const { title, performer } = request.query;
+      const songs = await this._service.getSongs(title, performer);
       const response = h.response({
         status: 'success',
         data: {
@@ -58,42 +57,25 @@ class SongsHandler{
         },
       });
       response.code(200);
+      return response;
+    } catch (error){
+      if (error instanceof ClientError) {
+        const response = h.response({
+          status: 'fail',
+          message: error.message,
+        });
+        response.code(error.statusCode);
+        return response;
+      } 
+      // Server ERROR = errorCode 500!
+      const response = h.response({
+        status: 'error',
+        message: 'Maaf, terjadi kegagalan pada server kami.',
+      });
+      response.code(500);
+      console.error(error);
       return response;
     }
-
-    if (title !== undefined && performer !== undefined) {
-      let songs = await this._service.getSongs({title, performer});
-      const response = h.response({
-        status: 'success',
-        data: {
-          songs,
-        },
-      });
-      response.code(200);
-      return response;
-    }
-
-    if (title !== undefined) {
-      let songs = await this._service.getSongs(title.toLowerCase());
-      const response = h.response({
-        status: 'success',
-        data: {
-          songs,
-        },
-      });
-      response.code(200);
-      return response;
-    }    
-
-    let songs = await this._service.getSongs();
-    const response = h.response({
-      status: 'success',
-      data: {
-        songs,
-      },
-    });
-    response.code(200);
-    return response;
   }
 
   async getSongByIdHandler(request, h){
