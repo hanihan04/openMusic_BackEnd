@@ -10,12 +10,11 @@ class SongsService {
     }
 
     async addSong({ title, year, genre, performer, duration, albumId }){
-        const id = nanoid(16);
-        const createdAt = new Date().toISOString();
-        const updatedAt = createdAt; 
+        const id = `song-${nanoid(16)}`;
+        const insertedAt = new Date().toISOString();
         const query = {
-          text: 'INSERT INTO songs VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id',
-          values: [id, title, year, genre, performer, duration, albumId, createdAt, updatedAt],
+          text: 'INSERT INTO songs VALUES($1, $2, $3, $4, $5, $6, $7, $8, $8) RETURNING id',
+          values: [id, title, year, genre, performer, duration, albumId, insertedAt],
         }; 
         const result = await this._pool.query(query); 
         if (!result.rows[0].id) {
@@ -25,19 +24,28 @@ class SongsService {
     }
 
     async getSongs(title, performer){  
-        let result = await this._pool.query('SELECT id, title, performer FROM songs');  
-        
-        if(title !== undefined){
-            result = await this._pool.query(`SELECT id, title, performer FROM songs WHERE lower(title) LIKE lower('%${title}%')`);
+        let query;
+        if(title && performer){
+            query = {
+                text: `SELECT id, title, performer FROM songs WHERE lower(title) LIKE lower('%${title}%') AND lower(performer) LIKE lower('%${performer}%')`
+            };
+        }else if(title){
+            query = { 
+                text: `SELECT id, title, performer FROM songs WHERE lower(title) LIKE lower('%${title}%')`
+            };
+        } else if(performer){
+            query = {
+                text: `SELECT id, title, performer FROM songs WHERE lower(performer) LIKE lower('%${performer}%')`
+            };
+        } else{
+            query = {
+                text: 'SELECT id, title, performer FROM songs'
+            };
         }
-
-        if(performer !== undefined){
-            result = await this._pool.query(`SELECT id, title, performer FROM songs WHERE lower(performer) LIKE lower('%${performer}%')`);
-        }
-
-        if (!result.rows.length) {
+        let result = await this._pool.query(query);
+        if (!result.rowCount) {
             throw new NotFoundError('Lagu tidak ditemukan');
-        } 
+        }         
         return result.rows.map(mapDBToModelSongs);        
     }
 
@@ -47,7 +55,7 @@ class SongsService {
             values: [id],
         };
         const result = await this._pool.query(query); 
-        if (!result.rows.length) {
+        if (!result.rowCount) {
             throw new NotFoundError('Lagu tidak ditemukan');
         } 
         return result.rows.map(mapDBToModelSongs)[0];
@@ -60,7 +68,7 @@ class SongsService {
           values: [title, year, genre, performer, duration, albumId, updatedAt, id],
         };     
         const result = await this._pool.query(query);     
-        if (!result.rows.length) {
+        if (!result.rowCount) {
           throw new NotFoundError('Gagal memperbarui lagu. Id tidak ditemukan');
         }
     }
@@ -71,7 +79,7 @@ class SongsService {
             values: [id],
         };    
         const result = await this._pool.query(query);    
-        if (!result.rows.length) {
+        if (!result.rowCount) {
             throw new NotFoundError('Lagu gagal dihapus. Id tidak ditemukan');
         }
     }

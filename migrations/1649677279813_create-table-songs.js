@@ -1,7 +1,5 @@
 /* eslint-disable camelcase */
 
-exports.shorthands = undefined;
-
 exports.up = pgm => {
     pgm.createTable('songs', {
         id: {
@@ -32,7 +30,7 @@ exports.up = pgm => {
           type: 'VARCHAR(50)',
           notNull: false,
         },
-        created_at: {
+        inserted_at: {
           type: 'TEXT',
           notNull: true,
         },

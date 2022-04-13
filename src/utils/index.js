@@ -6,7 +6,7 @@ const mapDBToModelSongs = ({
   performer,
   duration,
   album_id,
-  created_at,
+  inserted_at,
   updated_at,
 }) => ({
   id,
@@ -16,7 +16,7 @@ const mapDBToModelSongs = ({
   performer,
   duration,
   albumId: album_id,
-  createdAt: created_at,
+  insertedAt: inserted_at,
   updatedAt: updated_at,
 });
 
@@ -24,13 +24,13 @@ const mapDBToModelAlbums = ({
   id,
   name,
   year,
-  created_at,
+  inserted_at,
   updated_at,
 }) => ({
   id,
   name,
   year,
-  createdAt: created_at,
+  insertedAt: inserted_at,
   updatedAt: updated_at,
 });
    
