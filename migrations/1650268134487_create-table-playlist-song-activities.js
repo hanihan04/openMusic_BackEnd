@@ -1,23 +1,27 @@
 /* eslint-disable camelcase */
 exports.up = (pgm) => {
-  pgm.createTable('albums', {
+  pgm.createTable('playlist_song_activities', {
     id: {
       type: 'VARCHAR(50)',
       primaryKey: true,
     },
-    name: {
+    playlistid: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    songid: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    userid: {
+      type: 'VARCHAR(50)',
+      notNull: true,
+    },
+    action: {
       type: 'TEXT',
       notNull: true,
     },
-    year: {
-      type: 'INT',
-      notNull: true,
-    },
-    inserted_at: {
-      type: 'TEXT',
-      notNull: true,
-    },
-    updated_at: {
+    time: {
       type: 'TEXT',
       notNull: true,
     },
@@ -25,5 +29,5 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-  pgm.dropTable('albums');
+  pgm.dropTable('playlist_song_activities');
 };

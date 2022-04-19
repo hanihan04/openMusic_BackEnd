@@ -10,7 +10,7 @@ class AlbumsService {
     }
 
     async addAlbum({ name, year }){
-        const id = nanoid(16);
+        const id = `album-${nanoid(16)}`;
         const insertedAt = new Date().toISOString();
         const updatedAt = insertedAt; 
         const query = {
