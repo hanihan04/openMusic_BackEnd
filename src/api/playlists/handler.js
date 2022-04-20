@@ -17,8 +17,7 @@ class SongsHandler{
   async postPlaylistHandler(request, h){
     this._validator.validatePlaylistPayload(request.payload);
     const { name = 'untitled' } = request.payload;
-    const { id: credentialId } = request.auth.credentials;      
-    await this._service.verifyPlaylistOwner(name, credentialId);
+    const { id: credentialId } = request.auth.credentials;
     const playlistId = await this._service.addPlaylist({ name, owner: credentialId });
     return h.response({
       status: 'success',
@@ -44,7 +43,7 @@ class SongsHandler{
     const { id } = request.params;
     const { id: credentialId } = request.auth.credentials;
     await this._service.verifyPlaylistOwner(id, credentialId);
-    await this._service.deletePlaylistById(id);   
+    await this._service.deletePlaylistById(id, credentialId);   
     return h.response({
       status: 'success',
       message: 'Playlist berhasil dihapus.',
@@ -57,11 +56,14 @@ class SongsHandler{
     const {songId} = request.payload;
     const { id: credentialId } = request.auth.credentials; 
     await this._service.verifyPlaylistAccess(playlistId, credentialId);
-    await this._service.addSongToPlaylist(playlistId, songId);
+    const songOfPlaylistId = await this._service.addSongToPlaylist(playlistId, songId);
     await this._service.postPlaylistAct(playlistId, songId, credentialId, 'add');
     return h.response({
       status: 'success',
       message: 'Lagu berhasil ditambahkan ke Playlist.',
+      data: {
+        songOfPlaylistId,
+      },
     }).code(201);
   }
 
@@ -97,12 +99,12 @@ class SongsHandler{
     const { id: playlistId } = request.params;
     const { id: credentialId } = request.auth.credentials; 
     await this._service.verifyPlaylistAccess(playlistId, credentialId);
-    const playlistAct = await this._service.getSongsInPlaylist(playlistId); 
+    const playlistAct = await this._service.getPlaylistAct(playlistId); 
     return h.response({
       status: 'success',
       data: {
         "playlistId": playlistId,
-        "activities": getPlaylistAct,
+        "activities": playlistAct,
       },
     }).code(200);
   }

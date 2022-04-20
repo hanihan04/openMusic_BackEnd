@@ -18,7 +18,7 @@ class SongsService {
         }; 
         const result = await this._pool.query(query); 
         if (!result.rows[0].id) {
-          throw new InvariantError('Lagu gagal ditambahkan');
+          throw new InvariantError('Lagu gagal ditambahkan!');
         } 
         return result.rows[0].id;
     }
@@ -44,7 +44,7 @@ class SongsService {
         }
         let result = await this._pool.query(query);
         if (!result.rowCount) {
-            throw new NotFoundError('Lagu tidak ditemukan');
+            throw new NotFoundError('Lagu tidak ditemukan!');
         }         
         return result.rows.map(mapDBToModelSongs);        
     }
@@ -56,7 +56,7 @@ class SongsService {
         };
         const result = await this._pool.query(query); 
         if (!result.rowCount) {
-            throw new NotFoundError('Lagu tidak ditemukan');
+            throw new NotFoundError('Lagu tidak ditemukan!');
         } 
         return result.rows.map(mapDBToModelSongs)[0];
     }
@@ -69,7 +69,7 @@ class SongsService {
         };     
         const result = await this._pool.query(query);     
         if (!result.rowCount) {
-          throw new NotFoundError('Gagal memperbarui lagu. Id tidak ditemukan');
+          throw new NotFoundError('Gagal memperbarui lagu! Id tidak ditemukan.');
         }
     }
 
@@ -80,7 +80,7 @@ class SongsService {
         };    
         const result = await this._pool.query(query);    
         if (!result.rowCount) {
-            throw new NotFoundError('Lagu gagal dihapus. Id tidak ditemukan');
+            throw new NotFoundError('Lagu gagal dihapus! Id tidak ditemukan.');
         }
     }
     

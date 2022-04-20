@@ -8,6 +8,7 @@ class CollaborationsService {
   }
  
   async addCollaboration(playlistId, userId) {
+    await this.verifyExistingUser(userId);
     const id = `collab-${nanoid(16)}`; 
     const query = {
       text: 'INSERT INTO collaborations VALUES($1, $2, $3) RETURNING id',
@@ -15,7 +16,7 @@ class CollaborationsService {
     }; 
     const result = await this._pool.query(query); 
     if (!result.rowCount) {
-      throw new InvariantError('Kolaborasi gagal ditambahkan.');
+      throw new InvariantError('Kolaborasi gagal ditambahkan!');
     } 
     return result.rows[0].id;
   }
@@ -27,7 +28,7 @@ class CollaborationsService {
     }; 
     const result = await this._pool.query(query); 
     if (!result.rowCount) {
-      throw new InvariantError('Kolaborasi gagal dihapus.');
+      throw new InvariantError('Kolaborasi gagal dihapus!');
     }
   }
  
@@ -38,9 +39,20 @@ class CollaborationsService {
     }; 
     const result = await this._pool.query(query); 
     if (!result.rowCount) {
-      throw new InvariantError('Kolaborasi gagal diverifikasi.');
+      throw new InvariantError('Kolaborasi gagal diverifikasi!');
     }
   }
+
+  async verifyExistingUser(userId){
+    const query = {
+        text: 'SELECT * FROM users WHERE id = $1',
+        values: [userId],
+    };
+    const result = await this._pool.query(query);
+    if (!result.rowCount){
+        throw new NotFoundError('User tidak ditemukan!');
+    }
+}
 }
  
 module.exports = CollaborationsService;
