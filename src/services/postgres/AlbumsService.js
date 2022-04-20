@@ -66,7 +66,7 @@ class AlbumsService {
         };
         const result = await this._pool.query(query); 
         return result.rows.map(mapDBToModelSongs);
-    }
+    }    
 
 }
 

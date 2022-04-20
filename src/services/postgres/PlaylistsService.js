@@ -91,7 +91,7 @@ class PlaylistsService {
         };       
         const result = await this._pool.query(query);       
         if (!result.rowCount) {
-            throw new NotFoundError('Lagu gagal dihapus dari Playlist! Id tidak ditemukan.');
+            throw new InvariantError('Lagu gagal dihapus dari Playlist! Id tidak ditemukan.');
         }
     }
 
@@ -170,7 +170,7 @@ class PlaylistsService {
         };
         const result = await this._pool.query(query);
         if (result.rowCount > 0){
-            throw new InvariantError('Lagu gagal ditambahkan! Lagu sudah terdapat di dalam playlist.');
+            throw new InvariantError('Lagu gagal ditambahkan! Lagu sudah ada di dalam playlist.');
         }
     }
 
