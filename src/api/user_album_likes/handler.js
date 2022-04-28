@@ -6,18 +6,21 @@ class UserLikesAlbumHandler{
     this.getUserLikesAlbumByIdHandler = this.getUserLikesAlbumByIdHandler.bind(this);
   }
 
-  async postUserLikesAlbumByIdHandler(request, h){
+  async postUserLikesAlbumByIdHandler(request, h){     
     const { id: albumId } = request.params;
-    const { id: userId } = request.auth.credentials;
-    const Albumliked = await this._service.verifyUserLikesAlbum(userId, albumId);
+    const { id: credentialId } = request.auth.credentials;    
+    await this._service.verifyExistingAlbumById(albumId); 
+    console.log(albumId);
+    console.log(credentialId);
+    const Albumliked = await this._service.verifyUserLikesAlbum(credentialId, albumId);     
     if (!Albumliked){
-        await this._service.addLikeToAlbum(userId, albumId);
+        await this._service.addLikeToAlbum(credentialId, albumId);
         return h.response({
             status: 'success',
-            message: 'Album berhasil disukai.',
+            message: 'Album berhasil di-Like.',
         }).code(201);
     }
-    await this._service.deleteLikeFromAlbum(userId, albumId);
+    await this._service.deleteLikeFromAlbum(credentialId, albumId);
     return h.response({
       status: 'success',
       message: 'Like pada Album berhasil dibatalkan.',
@@ -26,13 +29,18 @@ class UserLikesAlbumHandler{
 
   async getUserLikesAlbumByIdHandler(request,h){
     const { id: albumId } = request.params;
-    const likeCount = await this._service.getUsersLikeCount(albumId);
-    return h.response({
+    const likesCount = await this._service.getAllLikesCount(albumId);
+    console.log(albumId);
+    console.log(likesCount.count);
+    const response = h.response({
       status: 'success',
       data: {
-          "Album Likes": likeCount.count,
+        likes: likesCount.count,
       },
-    }).header('X-Data-Source', likeCount.source).code(200);
+    });
+    response.header('X-Data-Source', likesCount.source);
+    response.code(200);
+    return response;
   }
 }
 

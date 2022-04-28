@@ -9,8 +9,7 @@ class UserLikesAlbumService {
         this._cacheService = cacheService;
     }
 
-    async addLikeToAlbum({userId, albumId}){
-        await this.verifyExistingAlbumById(albumId);        
+    async addLikeToAlbum(userId, albumId){             
         const id = `albumLike-${nanoid(16)}`;
         const query = {
             text: 'INSERT INTO user_album_likes VALUES($1, $2, $3) RETURNING id',
@@ -31,12 +30,12 @@ class UserLikesAlbumService {
         }; 
         const result = await this._pool.query(query); 
         if (!result.rowCount) {
-            throw new NotFoundError('Like pada Album GAGAL dibatalkan! Id tidak ditemukan');
+            throw new InvariantError('Like pada Album GAGAL dibatalkan!');
         }
         await this._cacheService.delete(`user_album_likes:${albumId}`);
     }    
 
-    async getUsersLikeCount(albumId){
+    async getAllLikesCount(albumId){
         try{
             const result = await this._cacheService.get(`user_album_likes: ${albumId}`);
             return{
@@ -59,8 +58,7 @@ class UserLikesAlbumService {
 
     async verifyExistingAlbumById(albumId){
         const query = {
-            text: 'SELECT * FROM albums WHERE id = $1',
-            values: [albumId],
+            text: `SELECT * FROM albums WHERE id = '${albumId}'`,
         };
         const result = await this._pool.query(query);
         if (!result.rowCount){
