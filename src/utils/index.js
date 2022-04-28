@@ -24,14 +24,14 @@ const mapDBToModelAlbums = ({
   id,
   name,
   year,
-  coverUrl,
+  coverurl,
   inserted_at,
   updated_at,
 }) => ({
   id,
   name,
   year,
-  coverUrl: coverUrl,
+  coverUrl: coverurl,
   insertedAt: inserted_at,
   updatedAt: updated_at,
 });
