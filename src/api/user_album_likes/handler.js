@@ -9,7 +9,7 @@ class UserLikesAlbumHandler{
   async postUserLikesAlbumByIdHandler(request, h){
     const { id: albumId } = request.params;
     const { id: userId } = request.auth.credentials;
-    const Albumliked = await this.verifyUserLikesAlbum(userId, albumId);
+    const Albumliked = await this._service.verifyUserLikesAlbum(userId, albumId);
     if (!Albumliked){
         await this._service.addLikeToAlbum(userId, albumId);
         return h.response({

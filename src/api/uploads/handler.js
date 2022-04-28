@@ -8,10 +8,10 @@ class UploadsHandler {
   }
  
   async postUploadCoverHandler(request, h) {
-    const { coverUrl } = request.payload;
+    const { coverurl } = request.payload;
     const { id: albumId } = request.params;
-    this._validator.validateImageHeaders(coverUrl.hapi.headers);
-    const fileLocation = await this._service.writeFile(coverUrl, coverUrl.hapi);
+    this._validator.validateImageHeaders(coverurl.hapi.headers);
+    const fileLocation = await this._service.writeFile(coverurl, coverurl.hapi);
     await this._albumsService.addAlbumCover(albumId, fileLocation);
     return h.response({
       status: 'success',

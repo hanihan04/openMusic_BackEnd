@@ -38,7 +38,7 @@ class UserLikesAlbumService {
 
     async getUsersLikeCount(albumId){
         try{
-            let result = await this._cacheService.get(`user_album_likes: ${albumId}`);
+            const result = await this._cacheService.get(`user_album_likes: ${albumId}`);
             return{
                 count: JSON.parce(result),
                 source: 'cache',
@@ -48,7 +48,7 @@ class UserLikesAlbumService {
                 text: 'SELECT * FROM user_album_likes WHERE albumid = $1',
                 values: [albumId],
             };
-            result = await this._pool.query(query);
+            const result = await this._pool.query(query);
             await this._cacheService.set(`user_album_likes: ${albumId}`, JSON.stringify(result.rowCount));
             return {
                 count: result.rowCount,
