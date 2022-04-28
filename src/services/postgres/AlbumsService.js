@@ -33,7 +33,7 @@ class AlbumsService {
 
     async getAlbumById(id){
         const query = {
-            text: 'SELECT id, name, coverurl FROM albums WHERE id = $1',
+            text: 'SELECT id, name, year, coverurl FROM albums WHERE id = $1',
             values: [id],
         };
         const result = await this._pool.query(query); 
