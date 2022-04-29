@@ -29,14 +29,12 @@ class UserLikesAlbumHandler{
     const { albumId } = request.params;
     await this._service.verifyExistingAlbumById(albumId);
     const likesCount = await this._service.getAllLikesCount(albumId);
-    const response = h.response({
+    return h.response({
       status: 'success',
       data: {
         likes: likesCount.count,
       },
-    });
-    response.header('X-Data-Source', likesCount.source).code(200);
-    return response;
+    }).header('X-Data-Source', likesCount.source).code(200);
   }
 }
 

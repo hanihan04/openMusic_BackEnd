@@ -19,7 +19,7 @@ class UserLikesAlbumService {
         if (!result.rows[0].id) {
             throw new InvariantError('Album GAGAL disukai! Id album tidak ditemukan.');
         }
-        await this._cacheService.delete(`user_album_likes: ${albumId}`);
+        await this._cacheService.delete(`albumLike: ${albumId}`);
         return result.rows[0].id;
     }
 
@@ -32,19 +32,19 @@ class UserLikesAlbumService {
         if (!result.rowCount) {
             throw new InvariantError('Like pada Album GAGAL dibatalkan!');
         }
-        await this._cacheService.delete(`user_album_likes: ${albumId}`);
+        await this._cacheService.delete(`albumLike: ${albumId}`);
     }    
 
     async getAllLikesCount(albumId){       
         try{
-            const result = await this._cacheService.get(`user_album_likes: ${albumId}`);
+            const result = await this._cacheService.get(`albumLike: ${albumId}`);
             return { 
-                count: JSON.parce(result),
+                count: JSON.parse(result),
                 source: 'cache',
             };
         } catch (error){
             const result = await this._pool.query(`SELECT * FROM user_album_likes WHERE albumid = '${albumId}'`);
-            await this._cacheService.set(`user_album_likes: ${albumId}`, JSON.stringify(result.rowCount));
+            await this._cacheService.set(`albumLike: ${albumId}`, JSON.stringify(result.rowCount));
             return {
                 count: result.rowCount,
                 source: 'db',
