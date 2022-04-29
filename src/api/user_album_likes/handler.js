@@ -1,18 +1,16 @@
 class UserLikesAlbumHandler{
-  constructor(service) {
+  constructor(service, albumsService) {
     this._service = service;
 
     this.postUserLikesAlbumByIdHandler = this.postUserLikesAlbumByIdHandler.bind(this);
-    this.getUserLikesAlbumByIdHandler = this.getUserLikesAlbumByIdHandler.bind(this);
+    this.getAlbumLikesByIdHandler = this.getAlbumLikesByIdHandler.bind(this);
   }
 
-  async postUserLikesAlbumByIdHandler(request, h){     
-    const { id: albumId } = request.params;
-    const { id: credentialId } = request.auth.credentials;    
-    await this._service.verifyExistingAlbumById(albumId); 
-    console.log(albumId);
-    console.log(credentialId);
-    const Albumliked = await this._service.verifyUserLikesAlbum(credentialId, albumId);     
+  async postUserLikesAlbumByIdHandler(request, h){         
+    const { albumId } = request.params;    
+    const { id: credentialId } = request.auth.credentials;
+    await this._service.verifyExistingAlbumById(albumId);      
+    const Albumliked = await this._service.verifyUserLikesAlbum(credentialId, albumId); 
     if (!Albumliked){
         await this._service.addLikeToAlbum(credentialId, albumId);
         return h.response({
@@ -27,19 +25,17 @@ class UserLikesAlbumHandler{
     }).code(201);
   }
 
-  async getUserLikesAlbumByIdHandler(request,h){
-    const { id: albumId } = request.params;
+  async getAlbumLikesByIdHandler(request,h){
+    const { albumId } = request.params;
+    await this._service.verifyExistingAlbumById(albumId);
     const likesCount = await this._service.getAllLikesCount(albumId);
-    console.log(albumId);
-    console.log(likesCount.count);
     const response = h.response({
       status: 'success',
       data: {
         likes: likesCount.count,
       },
     });
-    response.header('X-Data-Source', likesCount.source);
-    response.code(200);
+    response.header('X-Data-Source', likesCount.source).code(200);
     return response;
   }
 }
