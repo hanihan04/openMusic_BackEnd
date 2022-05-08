@@ -26,7 +26,11 @@ class AlbumsHandler{
     const { id } = request.params;
     const album = await this._service.getAlbumById(id);
     const songs = await this._service.getAlbumSongsByAlbumId(id);
-    const getAlbumWithSongs = {...album, songs};
+    const getAlbumWithSongs = {
+      ...album,
+      coverUrl: `http://${process.env.HOST}:${process.env.PORT}/albums/images/${album.coverUrl}`,
+      songs
+    };
     return h.response({
       status: 'success',
       data: {
