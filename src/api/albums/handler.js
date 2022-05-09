@@ -28,8 +28,8 @@ class AlbumsHandler{
     const songs = await this._service.getAlbumSongsByAlbumId(id);
     const getAlbumWithSongs = {
       ...album,
-      coverUrl: `http://${process.env.HOST}:${process.env.PORT}/albums/images/${album.coverUrl}`,
-      songs
+      coverUrl: (album.coverUrl === null)? null:`http://${process.env.HOST}:${process.env.PORT}/albums/images/${album.coverUrl}`,
+      songs,
     };
     return h.response({
       status: 'success',
