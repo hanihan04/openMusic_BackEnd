@@ -5,10 +5,10 @@ class PlaylistsService {
     this._pool = new Pool();
   }
 
-  async getPlaylist(userId, playlistId) {
+  async getPlaylist(playlistId) {
     const query1 = {
-      text: 'SELECT id, name FROM playlists WHERE owner = $1',
-      values: [userId],
+      text: 'SELECT id, name FROM playlists WHERE id = $1',
+      values: [playlistId],
     };
     const query2 = {
       text: 'SELECT s.id, s.title, s.performer FROM playlist_songs pls INNER JOIN songs s ON pls.songid = s.id WHERE pls.playlistid = $1',
