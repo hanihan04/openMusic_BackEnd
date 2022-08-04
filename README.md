@@ -10,4 +10,4 @@ Thanks to Dicoding.com
 
 Source : Dicoding.com
 
-#JavaScript #NodeJS #Postman_API_Testing #JSON #PostgreSQL #eslint #nodemon #hapi #joi
+#JavaScript #NodeJS #Postman_API_Testing #JSON #PostgreSQL #eslint #nodemon #hapi #joi #RabbitMQ
