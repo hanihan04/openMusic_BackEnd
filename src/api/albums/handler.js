@@ -13,13 +13,14 @@ class AlbumsHandler{
     this._validator.validateAlbumPayload(request.payload);
     const { name = 'untitled', year } = request.payload; 
     const albumId = await this._service.addAlbum({ name, year });
-    return h.response({
+    const response = h.response({
       status: 'success',
       message: 'Album berhasil ditambahkan',
       data: {
         albumId,
       },
     }).code(201);
+    return response;
   }
 
   async getAlbumByIdHandler(request, h){
@@ -27,12 +28,13 @@ class AlbumsHandler{
     const album = await this._service.getAlbumById(id);
     const songs = await this._service.getAlbumSongsByAlbumId(id);
     const getAlbumWithSongs = {...album, songs};
-    return h.response({
+    const response = h.response({
       status: 'success',
       data: {
         album: getAlbumWithSongs,
       },
     }).code(200);
+    return response;
   }
 
   async putAlbumByIdHandler(request, h){
@@ -40,19 +42,21 @@ class AlbumsHandler{
     const { name, year } = request.payload;
     const { id } = request.params; 
     await this._service.editAlbumById(id, { name, year });
-    return h.response({
+    const response = h.response({
       status: 'success',
       message: 'Album berhasil diperbarui',
     }).code(200);
+    return response;
   }
 
   async deleteAlbumByIdHandler(request, h){
     const { id } = request.params;
     await this._service.deleteAlbumById(id);
-    return h.response({
+    const response = h.response({
       status: 'success',
       message: 'Album berhasil dihapus',
     }).code(200);
+    return response;
   }
 
   
